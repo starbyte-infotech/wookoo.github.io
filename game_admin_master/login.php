@@ -1,44 +1,3 @@
-<?php
-
-session_start();
-include('config.php');
-// if(isset($_POST['login'])){
-
-//    $email = $_POST['email'];
-//    $phone = $_POST['phone'];
-//    $pass = $_POST['pass'];
-
-//    $ciphering = "AES-128-CTR";
-//    $iv_length = openssl_cipher_iv_length($ciphering);
-//    $options = 0;
-//    $encryption_iv = '1234117891111121';
-//    $encryption_key = "Nothing";
-//    $encrypt_pass = openssl_encrypt($pass, $ciphering, $encryption_key, $options, $encryption_iv);
-
-//    $chk_user = "SELECT * FROM `tbl_subadmin` WHERE `email` = '$email' AND `phone` = '$phone'";  
-//    $res_chk_user = mysqli_query($conn, $chk_user);
-//    $fetch_data = mysqli_fetch_assoc($res_chk_user);
-//    $row_count = mysqli_num_rows($res_chk_user);
-//    if($row_count == 1){
-   			
-//    		$dbPass = $fetch_data['password'];
-//    		if($encrypt_pass == $dbPass){
-//    			// echo "<script>alert('Success')</script>"; 
-//    			$flag = 1;
-//    		}else{
-//    			echo "<script>alert('Incorrect Password Entered. Try Again !!')</script>";
-//    		}
-
-//    }else{
-//    		echo "<script>alert('Incorrect Email or Phone. Please try again !!')</script>";
-//    }
-// }
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
 	<title>Login V6</title>
 	<meta charset="UTF-8">
@@ -64,8 +23,93 @@ include('config.php');
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="assets/css/util.css">
 	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 	<!--===============================================================================================-->
 </head>
+<?php
+
+session_start();
+include('config.php');
+$f = 0;
+if (isset($_POST['continue'])) 
+{
+	$detail = $_POST['detail'];
+	$password = $_POST['pass'];
+	$_SESSION['detail'] = $detail;
+
+	$ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234117891111121';
+    $encryption_key = "Nothing";
+    $encrypt_pass = openssl_encrypt($password, $ciphering, $encryption_key, $options, $encryption_iv);
+
+	if (filter_var($detail, FILTER_VALIDATE_EMAIL)) {
+		$query1 = "SELECT * FROM `tbl_subadmin` WHERE `email` LIKE '$detail' AND `password` = '$encrypt_pass'";
+		$result1 = mysqli_query($con, $query1);
+		$num = mysqli_num_rows($result1);
+		$store1 = mysqli_fetch_array($result1);
+		if ($num > 0) {
+			$_SESSION['temp_user'] = $store1['first_name'];
+			$_SESSION['temp_email'] = $store1['email'];
+			// Check_OTP($detail);
+			$f = 1;
+			?>
+
+			<script type="text/javascript">
+				var username= '<?php echo $detail ?>';
+				var password= '<?php echo $encrypt_pass ?>';
+                               
+                    jQuery.ajax({
+                        url: "ajax/send_login_otp_email.php",
+                        type: "POST",
+                        data:{
+                                "_token": "{{ csrf_token() }}",
+                                "email":username,
+                                "password":password
+                        },
+                        success: function(data)
+                        {
+                        	// alert("data" + data);
+                            location.replace("login_otp.php");
+                        }
+                    });
+			</script>
+			<?php 
+		} else {
+			// $error .= "Invalid User!! First Register";
+			echo '<script>alert("You are Entered Wrong Email or Password. Please try Again !!")</script>';
+		}
+	} else { echo "string"; die();
+		$query1 = "SELECT * FROM `tbl_subadmin` WHERE `phone` LIKE '$detail'";
+		$result1 = mysqli_query($con, $query1);
+		$num = mysqli_num_rows($result1);
+		$store1 = mysqli_fetch_array($result1);
+		if ($num > 0) {
+			$_SESSION['temp_user'] = $store1['first_name'];
+			// Check_OTP($detail);
+            $rndno = rand(100000, 999999); //OTP generate
+            //$_SESSION['check_otp'] = 555555;
+            $_SESSION['check_otp'] = $rndno;            
+            $url = "https://www.fast2sms.com/dev/bulk?authorization=szlExyGvi293hN1AV4goBaFJXeMHOt7P5wqSQKUTnIpCjDZfmd7zGK4rgaFnEYDHvTCckiPpb3V0UBoq&sender_id=FSTSMS&message=$rndno%20is%20Allen-bren%20code&language=english&route=p&numbers=$detail";
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+			$f = 2;
+		} else {
+			// $error .= "Invalid User!! First Register";
+			echo '<script>alert("You are not registered with us. Please sign up")</script>';
+		}
+	}
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+
 
 <body>
 
@@ -80,23 +124,23 @@ include('config.php');
 						<img src="assets/images/avatar-01.jpg" alt="AVATAR">
 					</span>
 
-					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter Email">
-						<input class="input100" type="text" name="email" id="email" class="email"> 
-						<span class="focus-input100" data-placeholder="E-mail"></span>
+					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter Email or Phone">
+						<input class="input100" type="text" name="detail" id="detail" class="detail"> 
+						<span class="focus-input100" data-placeholder="Email or Phone"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-35" data-validate="Enter Phone Number">
+					<!-- <div class="wrap-input100 validate-input m-b-35" data-validate="Enter Phone Number">
 						<input class="input100" type="tel" name="phone" id="phone">
 						<span class="focus-input100" data-placeholder="Phone" ></span>
-					</div>
+					</div> -->
 
-					<div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+					<div class="wrap-input100 m-b-50" data-validate="Enter password">
 						<input class="input100" type="password" name="pass" id="pass">
 						<span class="focus-input100" data-placeholder="Password"></span>
 					</div>
 
 					<div class="container-login100-form-btn">						
-						<button type="submit" class="login100-form-btn" name="login" onClick="getGenerate();">Login</button>
+						<button type="submit" class="login100-form-btn" name="continue">Login</button>
 					</div>
 
 					<ul class="login-more p-t-190">
@@ -104,10 +148,30 @@ include('config.php');
 							<span class="txt1">
 								Forgot
 							</span>
-							<a href="forgot.php" class="txt2">
+							<a href="" class="txt2" onclick="forgot_password()">
 								Username / Password?
 							</a>
 						</li>
+						<script>                                    
+                            function forgot_password()
+                            {
+                                var username=$('#detail').val();
+                               
+                                jQuery.ajax({
+	                                url: "ajax/password_ajax.php",
+	                                type: "POST",
+	                                data:{
+	                                        "_token": "{{ csrf_token() }}",
+	                                        "username":username
+	                                },
+	                                success: function(data)
+	                                {
+	                                	alert(data);
+	                                    location.replace("forgot.php");
+	                                }
+                                });
+                            }
+                        </script>
 
 						<li>
 							<span class="txt1">
@@ -145,49 +209,49 @@ include('config.php');
 	<script src="assets/js/main.js"></script>
 	<script type="text/javascript" src="assets/js/custom_script.js"></script>
 	<script type="text/javascript">
-		function getGenerate(){
-			var number = $('#phone').val();
-    		var email = $('#email').val();
-    		var password = $('#pass').val();
+		// function getGenerate(){
+		// 	var number = $('#phone').val();
+  //   		var email = $('#email').val();
+  //   		var password = $('#pass').val();
 
-   			var value = 12;
+  //  			var value = 12;
 
-			$.ajax({
-		        url: "ajax/functions.php",
-		        type: "post",
-		        // dataType: "json",
-		        data: {
-		        	action: 'send_otp',
-		        	value : value,
-		        	number : number,
-		        	email : email,
-		        	password : password,
-		        },
-		        success: function (data) {
-		        	// var obj = JSON.parse(data);
+		// 	$.ajax({
+		//         url: "ajax/functions.php",
+		//         type: "post",
+		//         // dataType: "json",
+		//         data: {
+		//         	action: 'send_otp',
+		//         	value : value,
+		//         	number : number,
+		//         	email : email,
+		//         	password : password,
+		//         },
+		//         success: function (data) {
+		//         	// var obj = JSON.parse(data);
 
-		        	var sub_admin = '<?php echo $_SESSION['sub_admin'] ?>';
-		        	var sub_mobile = '<?php echo $_SESSION['sub_mobile'] ?>';
-		            // alert(JSON.stringify(data));
-		            // alert(data);
-		            if(data == 0){
-		           		alert('Incorrect Password Entered. Try Again !!');
-		            }
-		            if(data == 2){
-		           		alert('Incorrect Email or Phone. Please try again !!');
-		            }
-		            if(data == 1){
-		           		alert('Success');
-		           		// $(".container").html(data);
-               //  		console.log(data);
-               			window.location = "http://localhost/wookoo/game_admin_master/otp.php?number="+sub_mobile+"&email="+sub_admin;
-		            }
-		        },
-		        error: function(jqXHR, textStatus, errorThrown) {
-		           alert(textStatus, errorThrown);
-		        }
-		    });
-		}
+		//         	var sub_admin = '<?php //echo $_SESSION['sub_admin'] ?>';
+		//         	var sub_mobile = '<?php// echo $_SESSION['sub_mobile'] ?>';
+		//             // alert(JSON.stringify(data));
+		//             // alert(data);
+		//             if(data == 0){
+		//            		alert('Incorrect Password Entered. Try Again !!');
+		//             }
+		//             if(data == 2){
+		//            		alert('Incorrect Email or Phone. Please try again !!');
+		//             }
+		//             if(data == 1){
+		//            		alert('Success');
+		//            		// $(".container").html(data);
+  //              //  		console.log(data);
+  //              			window.location = "http://localhost/wookoo/game_admin_master/otp.php?number="+sub_mobile+"&email="+sub_admin;
+		//             }
+		//         },
+		//         error: function(jqXHR, textStatus, errorThrown) {
+		//            alert(textStatus, errorThrown);
+		//         }
+		//     });
+		// }
 	</script>
 
 </body>

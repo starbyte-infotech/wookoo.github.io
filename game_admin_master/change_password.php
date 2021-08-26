@@ -1,3 +1,51 @@
+<?php
+session_start();
+error_reporting(0);;
+include('config.php');
+// if(!isset($_SESSION['tmp_username']))
+// {
+//     header("location:login.php");
+// }
+// else
+// {
+    $username=$_SESSION['tmp_username'];
+// }
+if(isset($_POST['continue']))
+{
+
+     $password=$_POST['pass'];
+     $confirm_password=$_POST['confirm-pass'];
+
+    $query_select = "SELECT * FROM `tbl_subadmin` WHERE `email` LIKE '$username'"; 
+    $result_select = mysqli_query($conn, $query_select);
+    $num = mysqli_num_rows($result_select);
+    if($password!=$confirm_password)
+    {
+        echo '<script>alert("password Must be same")</script>';
+    }
+    elseif($num>0)
+    { 
+        $store = mysqli_fetch_array($result_select);
+        $ciphering = "AES-128-CTR";
+        $iv_length = openssl_cipher_iv_length($ciphering);
+        $options = 0;
+        $encryption_iv = '1234117891111121';
+        $encryption_key = "Nothing";
+        $encryption = openssl_encrypt($password, $ciphering, $encryption_key, $options, $encryption_iv);
+        $id=$store['id'];
+        $query_update="UPDATE `tbl_subadmin` SET `password` = '$encryption' WHERE `tbl_subadmin`.`id` = $id";
+        $result_update = mysqli_query($conn, $query_update);
+        setcookie("passwordlogin","", time() - 3600);
+        unset($_SESSION['tmp_username']);
+        echo '<script>alert("Password is Changed Now.")</script>';
+        header("location:login.php");
+    }
+    
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
 	<title>Forgot V6</title>
 	<meta charset="UTF-8">
@@ -22,77 +70,9 @@
 	<link rel="stylesheet" type="text/css" href="assets/vendor/daterangepicker/daterangepicker.css">
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="assets/css/util.css">
-	<link rel="stylesheet" type="text/css" href="assets/css/main.css">	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
 	<!--===============================================================================================-->
 </head>
-<?php 
-session_start();
-include('config.php');
-if(!isset($_SESSION['tmp_username']))
-{
-    header("location:login.php");
-}
-else
-{
-    $username=$_SESSION['tmp_username'];
-}
-
-if(isset($_POST['continue']))
-{
-    $username=$_POST['username'];     
-    $query = "SELECT * FROM `tbl_subadmin` WHERE `email` like '$username'"; 
-    $result = mysqli_query($con, $query);
-    $num = mysqli_num_rows($result);
-    if ($num >0) {
-        $_SESSION['tmp_username']=$_POST['username'];     
-        $flag=1;
-        ?>
-        <script>
-            var email='<?php echo $_POST['username'] ?>';
-            $.ajax({
-                url: "ajax/otp_email.php",
-                type: "POST",
-                data:{
-                    "email":email
-                },
-                success: function(data)
-                {
-                    // alert(data);
-                    location.replace("otp.php");
-                }
-            });
-        </script>
-        <?php
-    }
-    else
-    {
-        echo '<script>alert("Your username Is Incorrect!!!")</script>';
-    }
-}
-if(isset($_POST['submit']))
-{
-    $flag=1;
-    $password=$_POST['password'];
-    if($password==$_SESSION['otp'])
-    {
-        $_SESSION['tmp_username']=$_POST['username'];     
-        header("location:change_password.php");
-    }
-    else
-    {
-        echo '<script>alert("Wrong OTP!!!")</script>';
-    }
-    
-}
-?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-
 
 <body>
 
@@ -107,15 +87,20 @@ if(isset($_POST['submit']))
 						<img src="assets/images/avatar-01.jpg" alt="AVATAR">
 					</span>
 
-					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter username">
-						<input class="input100" type="text" name="username">
-						<span class="focus-input100" data-placeholder="E-mail or Mobile number"></span>
+					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter Email Address">
+						<input class="input100" type="text" name="Email Address">
+						<span class="focus-input100" data-placeholder="E-mail"></span>
 					</div>
 
-					<!-- <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+					<div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
 						<input class="input100" type="password" name="pass">
 						<span class="focus-input100" data-placeholder="Password"></span>
-					</div> -->
+					</div>
+
+					<div class="wrap-input100 validate-input m-b-50" data-validate="Enter Confirm password">
+						<input class="input100" type="password" name="confirm-pass">
+						<span class="focus-input100" data-placeholder="Confirm Password"></span>
+					</div>
 					
 					<div class="container-login100-form-btn">						
 						<button type="submit" class="login100-form-btn" name="continue">Continue</button>
@@ -131,18 +116,7 @@ if(isset($_POST['submit']))
 								Login?
 							</a>
 						</li>
-
-						<!-- <li>
-							<span class="txt1">
-								Don’t have an account?
-							</span>
-
-							<a href="#" class="txt2">
-								Sign up
-							</a>
-						</li> -->
 					</ul>
-					
 				</form>
 			</div>
 		</div>
@@ -153,9 +127,6 @@ if(isset($_POST['submit']))
 
 	<!--===============================================================================================-->
 	<script src="assets/vendor/jquery/jquery-3.2.1.min.js"></script>
-
-
-<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 	<!--===============================================================================================-->
 	<script src="assets/vendor/animsition/js/animsition.min.js"></script>
 	<!--===============================================================================================-->

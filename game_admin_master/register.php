@@ -18,8 +18,28 @@ if(isset($_POST['submit'])){
     $options = 0;
     $encryption_iv = '1234117891111121';
     $encryption_key = "Nothing";
-    $encrypt_pass = openssl_encrypt($pass, $ciphering, $encryption_key, $options, $encryption_iv);
+    $encrypt_pass = openssl_encrypt($pass, $ciphering, $encryption_key, $options, $encryption_iv); ?>
 
+    <script type="text/javascript">
+        var username= '<?php echo $email ?>';
+        var password= '<?php echo $encrypt_pass ?>';
+                       
+            jQuery.ajax({
+                url: "ajax/send_otp_regi_email.php",
+                type: "POST",
+                data:{
+                        "_token": "{{ csrf_token() }}",
+                        "username":username,
+                        "password":password
+                },
+                success: function(data)
+                {
+                    alert(data);
+                    location.replace("regi_otp.php");
+                }
+            });
+    </script>
+    <?php
     if (move_uploaded_file($image_temp, $folder))  {
         $sql = "INSERT INTO `tbl_subadmin`(`id`, `first_name`, `last_name`,`phone`, `email`, `password`, `profile`, `created_at`) VALUES (NULL, '$fname','$lname','$phone', '$email', '$encrypt_pass', '$image', current_timestamp() )"; 
         $res = mysqli_query($conn, $sql);
