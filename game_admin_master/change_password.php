@@ -38,7 +38,7 @@ if(isset($_POST['continue']))
         setcookie("passwordlogin","", time() - 3600);
         unset($_SESSION['tmp_username']);
         echo '<script>alert("Password is Changed Now.")</script>';
-        header("location:login.php");
+        // header("location:login.php");
     }
     
 }

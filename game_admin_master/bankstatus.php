@@ -99,77 +99,44 @@
                                                 <th>
                                                     Edit Bank Details
                                                 </th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="active">
+                                        <?php
+                                            $sql = "select * from bank_detail where id = 1";
+                                            $result = mysqli_query($con,$sql);
+
+                                            if(mysqli_num_rows($result))
+                                            {
+                                                 while ($fetch = mysqli_fetch_assoc($result)) 
+                                            {
+
+                                        ?>
+                                            <tr class="<?php if($fetch['status']==1){echo "active";} ?>">
                                                 <td>
-                                                    Radha Krishna Damani
+                                                    <?php echo $fetch['bank_ac_name']; ?>
                                                 </td>
                                                 <td>
-                                                    State Bank Of India
+                                                    <?php echo $fetch['bank_name']; ?>
                                                 </td>
                                                 <td>
-                                                    59114455667788
+                                                     <?php echo $fetch['bank_ac_num']; ?>
                                                 </td>
                                                 <td>
-                                                    SBI0123456
+                                                     <?php echo $fetch['ifsc_code']; ?>
                                                 </td>
                                                 <td>
-                                                    <a class="details" href="bank-registration.html">Edit Details</a>
+                                                    <!-- <a class="details" href="bank-registration.php">Edit Details</a> -->
+                                                    <a class="details" href="edit_detail.php?id=<?php echo $fetch['bank_id']; ?>">Edit</a>
                                                 </td>
+                                               
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    Abba
-                                                </td>
-                                                <td>
-                                                    ICICI
-                                                </td>
-                                                <td>
-                                                    985895898658
-                                                </td>
-                                                <td>
-                                                    SBI0123456
-                                                </td>
-                                                <td>
-                                                    <a class="details" href="bank-registration.html">Edit Details</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Dabba
-                                                </td>
-                                                <td>
-                                                    HDFC
-                                                </td>
-                                                <td>
-                                                    59114455662644
-                                                </td>
-                                                <td>
-                                                    HDFC0123456
-                                                </td>
-                                                <td>
-                                                    <a class="details" href="bank-registration.html">Edit Details</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jabba
-                                                </td>
-                                                <td>
-                                                   Axis
-                                                </td>
-                                                <td>
-                                                    59114455667788
-                                                </td>
-                                                <td>
-                                                    SBI0123456
-                                                </td>
-                                                <td>
-                                                    <a class="details" href="bank-registration.html">Edit Details</a>
-                                                </td>
-                                            </tr>
+                                        <?php
+                                        }
+                                        }
+                                        ?>
+                                          
                                         </tbody>
                                     </table>
                                 </div>
@@ -188,6 +155,9 @@
                                     <table class="table">
                                         <thead class=" text-primary">
                                             <tr>
+                                                <th>
+                                                    Date
+                                                </th>
                                                 <th>
                                                     Domain
                                                 </th>
@@ -215,34 +185,62 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    Dakota Rice
-                                                </td>
-                                                <td>
-                                                    Niger
-                                                </td>
-                                                <td>
-                                                    Oud-Turnhout
-                                                </td>
-                                                <td>
-                                                    Dakota Rice
-                                                </td>
-                                                <td>
-                                                    Niger
-                                                </td>
-                                                <td>
-                                                    Oud-Turnhout
-                                                </td>
-                                                <td>
-                                                    Dakota Rice
-                                                </td>
 
-                                                <td>
-                                                    $36,738
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                       
+                                      
+                                       
+                <?php 
+       
+                        $sql = "select * from tbl_transaction";
+                        $result = mysqli_query($con,$sql);
+
+                        if(mysqli_num_rows($result))
+                        {
+                            while ($row = mysqli_fetch_assoc($result)) 
+                            {
+
+                ?>
+                                    <tr>
+                                       <td>
+                                            <?php echo $row['trans_date']; ?>
+                                        </td>
+                                         <td>
+                                              <?php echo $row['trans_dom_name']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_page_view']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_imp']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_clicks']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_page_rpm']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_imp_rpm']; ?>
+                                        </td>
+                                        <td>
+                                              <?php echo $row['trans_total_ear']; ?>
+                                        </td>
+                                        <td >
+                                              <?php echo $row['trans_your_ear']; ?>
+                                        </td>
+
+            
+                                    </tr>
+
+                            <?php
+                        }
+                    }
+             
+                ?>
+            
+                                  
+
+                           </tbody>
                                     </table>
                                 </div>
                             </div>

@@ -15,9 +15,6 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class=" text-primary">
-
-
-
                                     <tr>
                                          <th>
                                             Date
@@ -50,55 +47,54 @@
                                 </thead>
                                 <tbody>
 
-            <?php 
-                        $sql = "select * from tbl_domain";
-                        $result = mysqli_query($conn,$sql);
+                                            <?php 
+                                            //error_reporting(0);
+                                                        $sql = "select * from tbl_domain";
+                                                        $result = mysqli_query($con,$sql);
 
-                        if(mysqli_num_rows($result))
-                        {
-                            while ($fetch = mysqli_fetch_assoc($result)) 
-                            {
+                                                        if(mysqli_num_rows($result))
+                                                        {
+                                                            while ($fetch = mysqli_fetch_assoc($result)) 
+                                                            {
 
-                ?>
-                                    <tr>
-                                        <td>
-                                            <?php echo $fetch['date']; ?>
-                                        </td>
-                                         <td>
-                                              <?php echo $fetch['domain_name']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['page_view']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['impressions']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['clicks']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['page_rpm']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['imp_rpm']; ?>
-                                        </td>
-                                        <td>
-                                              <?php echo $fetch['total_ear']; ?>
-                                        </td>
-                                        <td class="text-right">
-                                              <?php echo $fetch['your_ear']; ?>
-                                        </td>
+                                                ?>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <?php echo $fetch['date']; ?>
+                                                                        </td>
+                                                                         <td>
+                                                                              <?php echo $fetch['domain_name']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['page_view']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['impressions']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['clicks']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['page_rpm']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['imp_rpm']; ?>
+                                                                        </td>
+                                                                        <td>
+                                                                              <?php echo $fetch['total_ear']; ?>
+                                                                        </td>
+                                                                        <td class="text-right">
+                                                                              <?php echo $fetch['your_ear']; ?>
+                                                                        </td>
 
-            
-                                    </tr>
+                                            
+                                                                    </tr>
 
-                <?php
-            }
-        }
-
-    ?>
-
-
+                                                <?php
+                                            }
+                                        }
+                                 
+                                    ?>
                                  
                                 </tbody>
                             </table>

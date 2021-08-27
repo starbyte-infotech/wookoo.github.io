@@ -6,7 +6,7 @@
 <div class="content">
   <div class="row">
     <div class="col-lg-4">
-      <a href="generate-link.html">
+      <a href="generate-link.php">
         <div class="card card-chart">
           <div class="card-header">
             <h5 class="card-category">6 Links</h5>
@@ -22,7 +22,7 @@
     </div>
 
     <div class="col-lg-4 col-md-6">
-      <a href="status.html">
+      <a href="status.php">
         <div class="card card-chart">
           <div class="card-header">
             <h5 class="card-category">3 Links</h5>
@@ -37,7 +37,7 @@
       </a>
     </div>
     <div class="col-lg-4 col-md-6">
-      <a href="action-table.html">
+      <a href="admobreport.php">
         <div class="card card-chart">
           <div class="card-header">
             <h5 class="card-category">5 Transactions</h5>
@@ -53,7 +53,7 @@
     </div>         
 
     <div class="col-lg-4 col-md-6">
-      <a href="bankstatus.html">
+      <a href="bankstatus.php">
         <div class="card card-chart">
           <div class="card-header">
             <h5 class="card-category">24 Transactions</h5>
