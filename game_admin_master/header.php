@@ -48,6 +48,9 @@
     .divActive p:hover{
       color: #fff !important;
     }
+   /* .custom-card .bank-info-table .bgcolor.active{
+      background-color: #c8f7c8;
+  }*/
   </style>
 </head>
 

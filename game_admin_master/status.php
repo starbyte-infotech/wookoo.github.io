@@ -36,6 +36,7 @@ if(isset($_SESSION['temp_email'])){
                                     <input type="text" class="form-control disabled link-input"
                                         placeholder="Company"
                                         value="<?php echo $fetch_link['link'] ?>">
+
                                 </div>
                             </div>
                             <?php if($status == 1){?>

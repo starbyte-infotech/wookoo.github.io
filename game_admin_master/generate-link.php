@@ -1,42 +1,7 @@
-<?php include('header.php'); ?>
-       <a>
-                                             href="
-    <?php
-       function randomNumber() {
-           $number = rand(1000, 9000);
-            echo ( "http://meet.jit.si/" . $number );
-        }
-        randomNumber();
-    
-    ?>" target="voip"></a>
-<!-- 
-    <iframe  name="voip" style="width: 50%; height: 700px;"/> -->
-   
 <?php 
-    // create connection
-   // $con = new mysqli('localhost', 'root', '', 'config');
-
-    //check connection
-    // if ($con->connect_error) {
-    //     die("Connection failed: " . $con->connect_error);
-    // }
-error_reporting(0);
-
-    // $gotNumber = $_POST['uniqid'];
-    
-    if ( $gotNumber === randomNumber() ) 
-    {
-        $sql = "INSERT INTO voip (unique_id) VALUES ('$gotNumber')";
-    } 
-    else 
-    {
-        $sql = "INSERT INTO voip (unique_id) VALUES ('1111')";
-    }
-
-    // $conn->close();
+include('header.php');
+include('config.php');
 ?>
-    
-
 
 
     <div class="panel-header panel-header-sm">
@@ -54,18 +19,60 @@ error_reporting(0);
                                 <div class="col-md-12 pr-1">
                                     <div class="form-group">
                                         <label>Game Name</label>
-                                    <input type="text" class="form-control disabled" placeholder="Company"
+                                    <input type="text" class="form-control gen_link" placeholder="Company"
                                             value="" >
+
                                          
                                     </div>
                                 </div>
 
                             </div>
                             <div class="row ml-1 text-center">
-                                  <button sandbox="" type="submit" name="voip" class="btn w-auto btn-primary btn-block ml-auto" data-toggle="modal"
-                                    data-target="#exampleModal">Generate New Link</button> 
-                              <button class="btn w-auto btn-primary btn-block  mr-auto" data-toggle="modal"
-                                    data-target="#exampleModal">Varify to copy Link</button>
+                                  <!-- <button sandbox="" type="submit" name="voip" class="btn w-auto btn-primary btn-block ml-auto" data-toggle="modal"
+                                    data-target="#exampleModal">Generate New Link</button>  -->
+                                    <a class="btn w-auto btn-primary btn-block ml-auto gen-link" onclick="generateLink();">Generate New Link</a>
+                                    <a class="btn w-auto btn-primary btn-block  mr-auto verify-link" disabled onclick="approveLink();">Verify To copy Link</a>
+                               <!--  <button class="btn w-auto btn-primary btn-block  mr-auto" data-toggle="modal"
+                                    data-target="#exampleModal">Varify to copy Link</button> -->
+                                <script type="text/javascript">
+                                    function generateLink(){
+                                        var rand_num = '<?php echo rand(10000,99999) ?>';
+                                        var gen_link = "http://localhost/wookoo.in/"+rand_num;
+
+                                        alert(gen_link);   
+                                        if(gen_link != ''){
+                                            $('.gen_link').val(gen_link);
+                                            $(".gen-link").attr('disabled', true);
+                                            $(".verify-link").attr('disabled', false);
+                                             alert("Please Verify Your New Link.");
+                                        }else{
+                                            alert("Link Not Generated.");   
+                                        }                                        
+                                    }
+                                    function approveLink(){
+                                        var generated_link = $('.gen_link').val();
+                                        jQuery.ajax({
+                                            url: "ajax/stored_link.php",
+                                            type: "POST",
+                                            data:{
+                                                    "action": "save_link",
+                                                    "generate_link":generated_link
+                                            },
+                                            success: function(data)
+                                            {
+                                                if(data == 1){
+                                                    alert('Link Generated Successfully');
+                                                    window.location.href = 'generate-link.php';
+
+                                                }
+                                                if(data == 0){
+                                                    alert('Failed to add');
+                                                }
+                                            }
+                                        });
+                                    }
+                                </script>
+                                
                             </div>
                         </form>
                     </div>          
@@ -77,3 +84,41 @@ error_reporting(0);
         </div>
     </div>
 <?php include('footer.php'); ?>
+<script>    
+
+                                    function verifyLink(){
+                                        var l = $('.gen_link').val();
+                                        alert("pre link : "+l);
+                                        // var rand_num = '<?php //echo rand(1000,9999) ?>';
+                                        // var generate_link = "http://localhost/wookoo.in/"+rand_num;
+                                        // var genNewLink = "<?php echo $_SESSION['gen_link'] ?>";
+                                        // alert(genNewLink);        
+
+                                        // $('.gen_link').val(generate_link);
+
+                                        // // alert(generate_link);
+                                        // jQuery.ajax({
+                                        //     url: "ajax/stored_link.php",
+                                        //     type: "POST",
+                                        //     data:{
+                                        //             "action": "save_link",
+                                        //             "generate_link":generate_link
+                                        //     },
+                                        //     success: function(data)
+                                        //     {
+                                        //         // alert(data);
+                                        //         // $('.bank-details-container').html(data);
+                                        //         if(data == 1){
+                                        //             alert('Link Generated Successfully');
+                                        //             window.location.href = 'generate-link.php';
+
+                                        //         }
+                                        //         if(data == 0){
+                                        //             alert('Failed to add');
+                                        //         }
+                                        //     }
+                                        // });
+
+                                    }
+                                </script>
+

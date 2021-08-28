@@ -53,6 +53,7 @@ if (isset($_POST['continue']))
 		if ($num > 0) {
 			$_SESSION['temp_user'] = $store1['first_name'];
 			$_SESSION['temp_email'] = $store1['email'];
+			$_SESSION['temp_user_id'] = $store1['id'];
 			// Check_OTP($detail);
 			$f = 1;
 			?>

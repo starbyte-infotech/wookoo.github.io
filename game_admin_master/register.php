@@ -42,7 +42,7 @@ if(isset($_POST['submit'])){
     <?php
     if (move_uploaded_file($image_temp, $folder))  {
         $sql = "INSERT INTO `tbl_subadmin`(`id`, `first_name`, `last_name`,`phone`, `email`, `password`, `profile`, `created_at`) VALUES (NULL, '$fname','$lname','$phone', '$email', '$encrypt_pass', '$image', current_timestamp() )"; 
-        $res = mysqli_query($conn, $sql);
+        $res = mysqli_query($con, $sql);
         if($res){
             echo "<script>alert('You have successfully registered');</script>";
         }else{

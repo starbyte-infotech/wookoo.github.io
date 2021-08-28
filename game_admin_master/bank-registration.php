@@ -1,6 +1,12 @@
 <?php 
     session_start();
     include('config.php');
+    if(isset($_SESSION['temp_user_id'])){
+        $id=$_SESSION['temp_user_id'];
+    }else{
+        header('Location: login.php');
+    }
+    
     if(isset($_POST['submit']))
     {
 
@@ -9,7 +15,7 @@
     $bank_ac_num = $_POST['bank_ac_num'];
     $ifsc_code = $_POST['ifsc_code'];
 
-        $sql = "INSERT INTO `bank_detail`(`bank_id`,`bank_ac_name`, `bank_name`,`bank_ac_num`, `ifsc_code`,`id`) VALUES (NULL,'$bank_ac_name','$bank_name','$bank_ac_num', '$ifsc_code',1,0)"; 
+ $sql = "INSERT INTO `bank_detail`(`bank_id`,`bank_ac_name`, `bank_name`,`bank_ac_num`, `ifsc_code`, `id`, `status`) VALUES (NULL,'$bank_ac_name','$bank_name','$bank_ac_num', '$ifsc_code','$id',0)"; 
         $res = mysqli_query($con, $sql);
 
         header('location: bankstatus.php');
@@ -80,11 +86,8 @@
 
                             <div class="row ml-1 text-center">    
                             <!-- 
-                                <a class="btn w-auto btn-primary btn-block" href="bankstatus.php" >Add Bank Details</a> --> 
-                                
-                                     <input class="btn w-auto btn-primary btn-block" type="submit" name="submit" >   
-                                
-
+                                <a class="btn w-auto btn-primary btn-block" href="bankstatus.php" >Add Bank Details</a> -->                
+                                     <input class="btn w-auto btn-primary btn-block" type="submit" name="submit" >           
                             </div>
             
 
